@@ -1,9 +1,8 @@
-
 /**
  * Implementa el manejo de un recurso
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author () 
+ * @version (10/ 06/ 2021)
  */
 public class Recurso
 {
@@ -20,11 +19,43 @@ public class Recurso
      * 
      */
     public Recurso(int idRecurso, String descripcionRecurso){
-        this.idRecurso = idRecurso;
-        this.descripcionRecurso = descripcionRecurso;
+        this.idRecurso = idRecurso; //Recibimos el numero 
+        this.descripcionRecurso = descripcionRecurso; //Material que deseamos
     }
     
-    // Métodos get y set
+    /**
+     * Metodo getRecursos
+     * @return this.idRecurso: Devuelve el id del recurso que se encuetra en la
+     * variable
+     */
+    public int get_idRecurso(){
+        return this.idRecurso;
+    }
     
-    // Métodos de la clase
+    /**
+     * Metodo getDescripcionRecurso
+     * @return this.descripcionRecurso: Devuelve la descripcion del recurso que se encuetra en la
+     * variable se encuentra en la variable
+     */
+    public String getDescripcionRecurso(){
+        return this.descripcionRecurso;
+    }
+    
+        /**
+     * Metodo setRecurso
+     * @param id: Es el id que se le desea asignar al recurso mediante este
+     * metodo
+     */
+        public void setIdRecurso(int id){
+        this.idRecurso = id;
+    }
+    
+    /**
+     * Metodo set_DescripcionRecurso
+     * @param String descripcion: Es la descripcion que se le desea asignar al
+     * recurso mediante este metodo
+     */    
+    public void setDescripcionRecurso(String descripcion){
+        this.descripcionRecurso = descripcion; 
+    }
 }
