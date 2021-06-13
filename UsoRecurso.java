@@ -1,11 +1,11 @@
-
+import java.io.Serializable;
 /**
  * Implementa el manejo del uso (cantidad) de un recurso para una tarea
  * 
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class UsoRecurso
+public class UsoRecurso implements Serializable
 {
     // Identificador del recurso utilizado
     int idRecurso;

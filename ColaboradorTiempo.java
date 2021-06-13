@@ -1,4 +1,4 @@
-
+import java.io.Serializable;
 /**
  * Implementa el manejo del tiempo asignado a una tarea de un colaborador
  * 
@@ -6,7 +6,7 @@
  * @version (a version number or a date)
  */
 
-public class ColaboradorTiempo
+public class ColaboradorTiempo implements Serializable
 {
     // Identificador del colaborador
     int idColaborador;

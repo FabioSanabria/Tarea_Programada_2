@@ -4,6 +4,7 @@ import java.util.Scanner;
 import java.util.GregorianCalendar;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.io.Serializable;
 /**
  * Implementa un gestor de listas
  * 
@@ -11,7 +12,7 @@ import java.util.Iterator;
  * @version (a version number or a date)
  */
 
-public class GestorListas
+public class GestorListas implements Serializable
 {
     // Conjunto de recursos del gestor
     ArrayList<Recurso> recursos;
