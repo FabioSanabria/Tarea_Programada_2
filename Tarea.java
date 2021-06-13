@@ -38,7 +38,34 @@ public class Tarea
     ArrayList<ColaboradorTiempo> responsables;
     // Lista de los identificadores, cantidades solicitadas y asignadas de los recursos utilizados de la tarea
     ArrayList<UsoRecurso> recursosTarea;
-    // Lista de los identificadores de las trareas antecesoras de la tarea
+    // Lista de los identificadores de las tareas antecesoras de la tarea
     ArrayList<Integer> antecesorasTarea;
     
+    public double cantidadSemanasTrabajador(double estimacionTiempoTarea,double estimacionEsfuerzoTarea){
+        double semanas = 0;
+        semanas = (double)(estimacionTiempoTarea / estimacionEsfuerzoTarea);
+        return semanas; 
+    }
+    
+    /**
+     * Metodo antecersorTarea 
+     * @param idTarea: El usurio da el id de la tarea antecesora
+     */
+    public void antecesorTarea(int idTarea){
+        antecesorasTarea.add(idTarea);
+        System.out.println("Esta tarea depende de la terea " + idTarea);
+    }
+    
+    //Bosquejo(No completo)
+    public void proxy(String estadoTarea, int idTarea){
+        String proxy;
+        if(estadoTarea.equals("Finalizado")){
+            System.out.println("Perfecto, la tarea puede iniciar de una vez ");
+            proxy = "";
+        }
+        else if(estadoTarea.equals("Por hacer") || estadoTarea.equals("Haciendo")){
+            System.out.println("La tarea requiere de una antecesora, creando proxy...");
+            proxy = "*Material necesario para hacer la tarea*";
+        }
+    }
 }
