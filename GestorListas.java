@@ -47,6 +47,60 @@ public class GestorListas implements Serializable
     } 
 
     // Métodos de la clase
+    
+    /**
+     * Busca el recurso en el gestor de listas
+     * 
+     * @param idRecurso El id del recurso que se desea encontrar
+     * @return recurso El recurso correspondiente al idRecurso
+     * 
+     */
+    public Recurso encuentraRecurso(int idRecurso){
+        Recurso recurso = null;
+        boolean encontro = false;
+        Iterator<Recurso> it = this.recursos.iterator();
+        
+        while(it.hasNext() && !encontro){
+            recurso = it.next();
+            if(recurso.getIdRecurso() == idRecurso){
+                encontro = true;
+            }
+        }
+        
+        if(!encontro){
+            recurso = null;
+        }
+
+        return recurso;
+    }
+    
+    /**
+     * Busca el colaborador en el gestor de listas
+     * 
+     * @param idColaborador El id del colaborador que se desea encontrar
+     * @return colaborador El colaborador correspondiente al idColaborador
+     * 
+     */
+    public Colaborador encuentraColaborador(int idColaborador){
+        Colaborador colaborador = null;
+        boolean encontro = false;
+        Iterator<Colaborador> it = this.colaboradores.iterator();
+        
+        while(it.hasNext() && !encontro){
+            colaborador = it.next();
+            if(colaborador.getIdColaborador() == idColaborador ){
+                encontro = true;
+            }
+        }
+        
+        if(!encontro){
+            colaborador = null;
+        }
+
+        return colaborador;
+    }
+    
+    
     /**
      * Agrega un recurso al conjunto de recursos
      * 
@@ -274,6 +328,36 @@ public class GestorListas implements Serializable
     }
     
     /**
+     * Consultar las listas y su desglose de tareas de acuerdo a sus estado
+     * 
+     * @return resultado Los datos de las listas del gestor de listas
+     * 
+     */
+    public String consultaListas(String estadoTarea){
+        String resultado = "";
+        for(Lista lista:this.listas){
+            resultado += lista.toString(estadoTarea) + "\n";
+        }
+        return resultado;
+    }
+    
+    /**
+     * Consultar las listas y su desglose de tareas para las que cumplen ciertas condiciones
+     * 
+     * @return resultado Los datos de las listas del gestor de listas
+     * 
+     */
+    public String consultaListas(double estimacionDineroTarea, double estimacionEsfuerzoTarea,
+    double estimacionTiempoTarea, double gradoAvanceTarea){
+        String resultado = "";
+        for(Lista lista:this.listas){
+            resultado += lista.toString(estimacionDineroTarea, estimacionEsfuerzoTarea,
+                                        estimacionTiempoTarea, gradoAvanceTarea) + "\n";
+        }
+        return resultado;
+    }
+    
+    /**
      * Consultar las listas con todos sus datos del gestor de listas
      * 
      * @return resultado Los datos de las listas completas del gestor de listas
@@ -289,5 +373,16 @@ public class GestorListas implements Serializable
             }
         }
         return resultado;
+    }
+    
+    /**
+     * Borrar una lista del conjunto de listas 
+     * 
+     * @param lista La lista que se desea borrar
+     * 
+     */
+    public void borraLista(Lista lista){
+        int indice = listas.indexOf(lista);
+        listas.remove(indice);
     }
 }
