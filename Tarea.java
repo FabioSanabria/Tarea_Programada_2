@@ -5,8 +5,8 @@ import java.util.ArrayList;
 /**
  * Implementa el manejo de una tarea
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Maria Paula Oviedo B85836, Kendaly Grijalba C03523, Fabio Sanabria C07194 
+ * @version (Version 3)
  */
 
 public class Tarea
@@ -56,10 +56,8 @@ public class Tarea
      * @param estadoTarea El estado que tiene la tarea, ya sea Terminada, en Proceso o Por hacer
      */
         public Tarea(int idTarea, String nombreTarea, GregorianCalendar fechaInicioEstimadaTarea,
-        GregorianCalendar fechaFinEstimadaTarea, GregorianCalendar fechaInicioRealTarea,
-        GregorianCalendar fechaFinRealTarea, double estimacionDineroTarea,
-        double estimacionEsfuerzoTarea, double estimacionTiempoTarea,
-        double gradoAvanceTarea, String estadoTarea){
+        GregorianCalendar fechaFinEstimadaTarea, double estimacionDineroTarea,
+        double estimacionEsfuerzoTarea, double estimacionTiempoTarea){
         this.idTarea = idTarea;
         
         this.nombreTarea = nombreTarea;
@@ -68,9 +66,9 @@ public class Tarea
     
         this.fechaFinEstimadaTarea = fechaFinEstimadaTarea;
    
-        this.fechaInicioRealTarea = fechaInicioRealTarea;
+        this.fechaInicioRealTarea = this.fechaInicioEstimadaTarea;
    
-        this.fechaFinRealTarea = fechaFinRealTarea;
+        this.fechaFinRealTarea = this.fechaFinEstimadaTarea;
     
         this.estimacionDineroTarea = estimacionDineroTarea;
     
@@ -78,9 +76,9 @@ public class Tarea
    
         this.estimacionTiempoTarea = estimacionTiempoTarea;
 
-        this.gradoAvanceTarea = gradoAvanceTarea;
+        this.gradoAvanceTarea = 0;
 
-        this.estadoTarea =estadoTarea ;        
+        this.estadoTarea = "Por Hacer" ;        
     }
     
     /**
@@ -98,7 +96,7 @@ public class Tarea
         "\nEl estado de esta tarea es " + estadoTarea;
     }
     
-        /**
+    /**
      * Metodo cantidadSemanasTrabajador(double estimacionTiempoTarea,double estimacionEsfuerzoTarea)
      * @param double estimacionTiempoTarea: Tiempo estimado en la que la tarea termina 
      * @param double estimacionEsfuerzoTarea: Tiempo estimado que va a utilzar el trabajador para realizar su tarea
@@ -111,14 +109,74 @@ public class Tarea
     }
     
     /**
-     * Metodo antecersorTarea 
-     * @param idTarea: El usurio da el id de la tarea antecesora
-     */
-    public void antecesorTarea(int IdTareaAntecesora){
+     * Metodo agregarAntecesorTarea 
+     * @param idTarea: El usuario da el id de la tarea antecesora y lo agrega al array de antecesoras
+    */
+    public void agregaAntecesora(int IdTareaAntecesora){
         antecesorasTarea.add(IdTareaAntecesora);
         System.out.println("La tarea "+ this.idTarea + "depende de la tarea " + IdTareaAntecesora);
     }
     
+    /**
+     * Metodo agregaResponsable 
+     * @param idColaborador: El usuario da el id del Colaborador Tiempo y lo agrega al array de responsables
+    */
+    public void agregaResponsable(ColaboradorTiempo idColaborador){
+        responsables.add(idColaborador);
+        System.out.println("Se ha agregado exitosamente el colaborador");
+    }
+    
+    /**
+     * Metodo agregaRecurso 
+     * @param IdRecurso: El usuario da el id Recurso y lo agrega al array de recursosTarea
+    */
+    public void agregaRecurso(UsoRecurso IdRecurso){
+        recursosTarea.add(IdRecurso);
+        System.out.println("Se ha agregado exitosamente el recurso");
+    }
+    
+    /**
+     * Metodo borraAntecesora 
+     * @param idTareaAntecesora: ID que el usuario desea eliminar del array antecesor
+    */
+    public void borraAntecesora(int idTareaAntecesora){
+        System.out.println("Eliminando tarea " + idTareaAntecesora + " del array");
+        antecesorasTarea.remove(idTareaAntecesora);
+    }
+    
+    /**
+     * Metodo borraRecurso 
+     * @param idUsoRecurso: ID que el usuario desea eliminar del array antecesor
+    */
+    public void borraRecurso(int idUsoRecurso){
+        System.out.println("Eliminando recurso " + idUsoRecurso + " del array");
+        recursosTarea.remove(idUsoRecurso);
+    }
+    
+    /**
+     * Metodo borraResponsable 
+     * @param idColaborador: ID que el usuario desea eliminar del array de responsables
+    */
+    public void borraResponsable(int idColaborador){
+        System.out.println("Eliminando colaborador tiempo " + idColaborador + " del array");
+        responsables.remove(idColaborador);
+    } 
+    
+    /**
+     * Metodo setEstadoTarea 
+     * @param estadoTarea: Es el estado de la tarea en la que se encuentra ya sea finalizada, Por hacer o En progreso
+    */
+    public void setEstadoTarea(String estadoTarea){
+        this.estadoTarea = estadoTarea;    
+    }
+    
+    /**
+     * Metodo getEstadoTarea 
+     * @return this.estadoTarea: Retorna el estado de la tarea en la que se encuentra, ya sea finalizada, Por hacer o En progreso
+    */
+    public String getEstadoTarea(){
+        return this.estadoTarea;
+    }
     //Idea de proxy 2.0
     /**
      * Metodo crearProxy 

@@ -28,7 +28,7 @@ public class Recurso
      * @return this.idRecurso: Devuelve el id del recurso que se encuetra en la
      * variable
      */
-    public int get_idRecurso(){
+    public int getIdRecurso(){
         return this.idRecurso;
     }
     
