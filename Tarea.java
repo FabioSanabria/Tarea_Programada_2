@@ -177,6 +177,30 @@ public class Tarea
     public String getEstadoTarea(){
         return this.estadoTarea;
     }
+    
+    /**
+     * Metodo setsetFechaInicioRealTarea 
+     * @param fechaInicioRealTarea
+     * Establece un nuevo inicio real de la tarea
+    */
+    public void setFechaInicioRealTarea(GregorianCalendar fechaInicioRealTarea){
+        this.fechaInicioRealTarea = fechaInicioRealTarea;
+    }
+    
+    /**
+     * Metodo setsetFechaFinRealTarea 
+     * @param fechaFinRealTarea
+     * Establece un nuevo final real de la tarea
+    */
+    public void setFechaFinRealTarea(GregorianCalendar fechaFinRealTarea){
+        this.fechaFinRealTarea = fechaFinRealTarea;
+    }    
+    
+    public UsoRecurso encuentraUsoRecurso(int idRecurso){
+        UsoRecurso recursoBuscado;
+        recursoBuscado = recursosTarea.get(idRecurso);
+        return recursoBuscado;
+    }
     //Idea de proxy 2.0
     /**
      * Metodo crearProxy 
