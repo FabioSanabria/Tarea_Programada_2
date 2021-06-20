@@ -248,6 +248,46 @@ public class Tarea
     }
     
     /**
+     * Metodo getIdTarea 
+     * @return this.idTarea: Retorna el id de la tarea 
+    */
+    public int getIdTarea(){
+        return this.idTarea;
+    }
+    
+    /**
+     * Metodo getEstimacionTiempoTarea 
+     * @return this.estimacionTiempoTarea: Retorna el tiempo estimado de la tarea
+    */
+    public double getEstimacionTiempoTarea(){
+        return this.estimacionTiempoTarea;
+    }
+    
+    /**
+     * Metodo getEstimacionEsfuerzoTarea 
+     * @return this.estimacionEsfuerzoTarea: Retorna el tiempo que se estima para realizar esta tarea
+    */
+    public double getEstimacionEsfuerzoTarea(){
+        return this.estimacionEsfuerzoTarea;
+    }
+    
+    /**
+     * Metodo getEstimacionDineroTarea 
+     * @return this.estimacionDineroTarea: Retorna el dinero estimado para realizar esta tarea 
+    */
+    public double getEstimacionDineroTarea(){
+        return this.estimacionDineroTarea;
+    }
+    
+    /**
+     * Metodo getGradoAvanceTarea 
+     * @return this.gradoAvanceTarea: Retorna el avance que se lleva en la tarea 
+    */
+    public double getGradoAvanceTarea(){
+        return this.gradoAvanceTarea;
+    }
+    
+    /**
      * Metodo encuentraUsoRecurso 
      * @param idRecurso: Recibe el id que se desea buscar en el array
      * @return recursoBuscado: retorna el recurso que estaba buscando el usuario

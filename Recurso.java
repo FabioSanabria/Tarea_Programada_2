@@ -1,10 +1,11 @@
+import java.io.Serializable;
 /**
  * Implementa el manejo de un recurso
  * 
  * @author () 
  * @version (10/ 06/ 2021)
  */
-public class Recurso
+public class Recurso implements Serializable
 {
     // Identificador del recurso
     int idRecurso;
@@ -33,6 +34,14 @@ public class Recurso
     }
     
     /**
+     * Metodo ToString
+     * @return this.idRecurso... : Devuelve el id del recurso junto con su descripcion
+     */
+    public String toString(){
+        return this.idRecurso + " " + this.descripcionRecurso; 
+    }
+    
+    /**
      * Metodo getDescripcionRecurso
      * @return this.descripcionRecurso: Devuelve la descripcion del recurso que se encuetra en la
      * variable se encuentra en la variable
@@ -51,7 +60,7 @@ public class Recurso
     }
     
     /**
-     * Metodo set_DescripcionRecurso
+     * Metodo setDescripcionRecurso
      * @param String descripcion: Es la descripcion que se le desea asignar al
      * recurso mediante este metodo
      */    
