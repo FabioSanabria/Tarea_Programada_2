@@ -1,7 +1,7 @@
 import java.util.GregorianCalendar;
 import java.util.Calendar;
 import java.util.ArrayList;
-
+import java.util.Iterator;
 /**
  * Implementa el manejo de una tarea
  * 
@@ -78,7 +78,13 @@ public class Tarea
 
         this.gradoAvanceTarea = 0;
 
-        this.estadoTarea = "Por Hacer" ;        
+        this.estadoTarea = "Por hacer";
+        
+        this.responsables = new ArrayList<>();
+        
+        this.recursosTarea = new ArrayList<>();
+        
+        this.antecesorasTarea = new ArrayList<>();
     }
     
     /**
@@ -119,48 +125,84 @@ public class Tarea
     
     /**
      * Metodo agregaResponsable 
-     * @param idColaborador: El usuario da el id del Colaborador Tiempo y lo agrega al array de responsables
+     * @param colaborador: El usuario da colaborador y lo agrega al array de responsables
     */
-    public void agregaResponsable(ColaboradorTiempo idColaborador){
-        responsables.add(idColaborador);
-        System.out.println("Se ha agregado exitosamente el colaborador");
+    public void agregaResponsable(Colaborador colaborador){
+        ColaboradorTiempo colaboradorTiempo = new ColaboradorTiempo(colaborador);
+        this.responsables.add(colaboradorTiempo);
     }
     
+
     /**
      * Metodo agregaRecurso 
      * @param IdRecurso: El usuario da el id Recurso y lo agrega al array de recursosTarea
-    */
-    public void agregaRecurso(UsoRecurso IdRecurso){
-        recursosTarea.add(IdRecurso);
-        System.out.println("Se ha agregado exitosamente el recurso");
+       @param cantidadSolicitada : Indica la cantidad del recurso aque se desea agregar 
+       */
+    public void agregaRecurso(Recurso recurso, double cantidadSolicitadaRecurso){
+        UsoRecurso usoRecurso = new UsoRecurso(recurso,cantidadSolicitadaRecurso);
+        this.recursosTarea.add(usoRecurso);
     }
     
     /**
      * Metodo borraAntecesora 
-     * @param idTareaAntecesora: ID que el usuario desea eliminar del array antecesor
+     * @param idTareaAntecesora: ID de la antecesora que el usuario desea eliminar del array antecesor
     */
     public void borraAntecesora(int idTareaAntecesora){
-        System.out.println("Eliminando tarea " + idTareaAntecesora + " del array");
-        antecesorasTarea.remove(idTareaAntecesora);
+        int id = 0;
+        boolean encontro = false;
+        Iterator<Integer> it = this.antecesorasTarea.iterator();
+        
+        while(it.hasNext() && !encontro){
+            id = it.next();
+            
+            if(id == idTareaAntecesora){
+                encontro = true;
+                int indice = antecesorasTarea.indexOf(id);
+                antecesorasTarea.remove(indice);
+            }
+        }
     }
-    
+
     /**
      * Metodo borraRecurso 
-     * @param idUsoRecurso: ID que el usuario desea eliminar del array antecesor
+     * @param idRecurso: ID del recurso que el usuario desea eliminar del array antecesor
     */
-    public void borraRecurso(int idUsoRecurso){
-        System.out.println("Eliminando recurso " + idUsoRecurso + " del array");
-        recursosTarea.remove(idUsoRecurso);
+    public void borraRecurso(int idRecurso){
+        UsoRecurso usoRecurso = null;
+        boolean encontro = false;
+        Iterator<UsoRecurso> it = this.recursosTarea.iterator();
+        
+        while(it.hasNext() && !encontro){
+            usoRecurso = it.next();
+            
+            if(usoRecurso.getRecurso().getIdRecurso() == idRecurso){
+                encontro = true;
+                int indice = recursosTarea.indexOf(usoRecurso);
+                recursosTarea.remove(indice);
+            }
+        }
     }
     
+
     /**
-     * Metodo borraResponsable 
-     * @param idColaborador: ID que el usuario desea eliminar del array de responsables
-    */
+     * Metodo borraResponsable  
+     * @param idColaborador: Recibe el id del colaborador que se desea eliminar del array
+    */ 
     public void borraResponsable(int idColaborador){
-        System.out.println("Eliminando colaborador tiempo " + idColaborador + " del array");
-        responsables.remove(idColaborador);
-    } 
+        ColaboradorTiempo colaboradorTiempo = null;
+        boolean encontro = false;
+        Iterator<ColaboradorTiempo> it = this.responsables.iterator();
+        
+        while(it.hasNext() && !encontro){
+            colaboradorTiempo = it.next();
+            
+            if(colaboradorTiempo.getColaborador().getIdColaborador() == idColaborador){
+                encontro = true;
+                int indice = responsables.indexOf(colaboradorTiempo);
+                responsables.remove(indice);
+            }
+        }
+    }
     
     /**
      * Metodo setEstadoTarea 
@@ -179,7 +221,7 @@ public class Tarea
     }
     
     /**
-     * Metodo setsetFechaInicioRealTarea 
+     * Metodo setFechaInicioRealTarea 
      * @param fechaInicioRealTarea
      * Establece un nuevo inicio real de la tarea
     */
@@ -196,9 +238,35 @@ public class Tarea
         this.fechaFinRealTarea = fechaFinRealTarea;
     }    
     
+    /**
+     * Metodo setGradoAvaceTarea 
+     * @param gradoAvance
+     * Le pasa el valor "gradoAvance" a la variable "gradoAvanceTarea"
+    */    
+    public void setGradoAvanceTarea(double gradoAvance){
+        this.gradoAvanceTarea = gradoAvance;
+    }
+    
+    /**
+     * Metodo encuentraUsoRecurso 
+     * @param idRecurso: Recibe el id que se desea buscar en el array
+     * @return recursoBuscado: retorna el recurso que estaba buscando el usuario
+    */ 
     public UsoRecurso encuentraUsoRecurso(int idRecurso){
-        UsoRecurso recursoBuscado;
-        recursoBuscado = recursosTarea.get(idRecurso);
+        UsoRecurso recursoBuscado = null;
+        boolean encontro = false;
+        Iterator<UsoRecurso> it = this.recursosTarea.iterator();
+        
+        while(it.hasNext() && !encontro){
+            recursoBuscado = it.next();
+            if(recursoBuscado.getRecurso().getIdRecurso() == idRecurso){
+                encontro = true;
+            }
+        }
+        
+        if(!encontro){
+            recursoBuscado = null;
+        }     
         return recursoBuscado;
     }
     //Idea de proxy 2.0
@@ -210,7 +278,7 @@ public class Tarea
         Tarea proxy;
         if(antecesorasTarea.get(posicionTarea).getEstadoTarea().equals("Finalizado")){
             System.out.println("Perfecto, la tarea puede iniciar de una vez ");
-            proxy = new Tarea(0,"",0,0,0,0,0,0,0,0,""); //Revisar el Calendario
+            proxy = null;
         }
         else if(antecesorasTarea.get(posicionTarea).getEstadoTarea().equals("Por hacer") || 
         antecesorasTarea.get(posicionTarea).getEstadoTarea().equals("Haciendo")){
@@ -218,6 +286,6 @@ public class Tarea
             proxy = new Tarea(antecesorasTarea.get(posicionTarea).getInformacionCompleta()); //Pasa los datos de la tarea que no esta terminada
             return proxy;
         }
-        return proxy;
+        return proxy; 
     }
 }
