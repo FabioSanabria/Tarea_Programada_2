@@ -300,7 +300,7 @@ public class Lista implements Serializable
         return resultado;
     }
     
-    
+
     /**
     * Método toString
     * @param estimacionDineroTarea: Diinero estimado que va a utilzar el trabajador para realizar su tarea
@@ -324,7 +324,7 @@ public class Lista implements Serializable
                 dinero = true;
             }
             else{
-                if (tarea.getEstimacionTiempoTarea() == estimacionTiempoTarea)
+                if (tarea.getEstimacionDineroTarea() == estimacionDineroTarea)
                     dinero = true;
                 else
                     dinero = false;
