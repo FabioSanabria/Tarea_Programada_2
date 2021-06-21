@@ -10,7 +10,7 @@ public class Colaborador implements Serializable
 {
     
      // Identificador del colaborador
-    int idColaborador;
+    int IdColaborador;
     // Nombre del colaborador
     String nombreColaborador;
     
@@ -21,9 +21,9 @@ public class Colaborador implements Serializable
      * @param idColaborador se inicializa la variable para guardar el id del colaborador
      * @param nombreColaborador se inicializa la variable para guardar el nombre del colaborador
      */
-    public Colaborador(int IdLista,int idColaborador, String nombreColaborador){
+    public Colaborador(int IdColaborador, String nombreColaborador){
         
-        this.idColaborador = idColaborador;
+        this.IdColaborador = IdColaborador;
         this.nombreColaborador= nombreColaborador; 
         
     }
@@ -32,15 +32,15 @@ public class Colaborador implements Serializable
     
      
     
-    //Método get idColaborador
+    //Método get IdColaborador
     /**
-     * Método getidColaborador
-     * @return this.idColaborado, devuelve el id delcolaborador.
+     * Método getIdColaborador
+     * @return this.IdColaborado, devuelve el id delcolaborador.
      * 
      */
-    public  int  getidColaborador ()
+    public  int  getIdColaborador ()
     {
-         return this.idColaborador;
+         return this.IdColaborador;
     }
     
     //Método getnombreColaborador
@@ -55,14 +55,14 @@ public class Colaborador implements Serializable
     
     
     
-    //Metodo setidColaborador
+    //Metodo setIdColaborador
     /**
-     * Metodo setidColaborador
-     * @param idColaborador: Es el id que se le asigna al colaborador mediante este
+     * Metodo setIdColaborador
+     * @param IdColaborador: Es el id que se le asigna al colaborador mediante este
      * metodo
      */
-    public void setidColaborador(int idColaborador){
-        this.idColaborador=idColaborador;
+    public void setIdColaborador(int IdColaborador){
+        this.IdColaborador=IdColaborador;
     }
     
     //Metodo setnombreColaborador
@@ -80,6 +80,6 @@ public class Colaborador implements Serializable
      * @return:Retorna los datos del colaborador
      */
     public String toString(){
-        return this.idColaborador + " " + this.nombreColaborador; 
+        return this.IdColaborador + " " + this.nombreColaborador; 
     }
 }
