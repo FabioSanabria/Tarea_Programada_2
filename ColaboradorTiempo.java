@@ -8,8 +8,8 @@ import java.io.Serializable;
 
 public class ColaboradorTiempo implements Serializable
 {
-    // Identificador del colaborador
-    int idColaborador;
+    // Colaborador
+    Colaborador colaborador;
     // Tiempo en semanas que el colaborador dedicará a la tarea (se calcula con base el tiempo estimado de la tarea)
     double semanasColaborador;
     
@@ -21,26 +21,30 @@ public class ColaboradorTiempo implements Serializable
      * @param idColaborador El identificador del colaborador.
      * 
      */
-    public ColaboradorTiempo(int idColaborador){
-        this.idColaborador = idColaborador;
+    public ColaboradorTiempo(Colaborador colaborador){
+        this.colaborador = colaborador;
         this.semanasColaborador = 0;
     }
     
     // Métodos get y set
     
-    public int getIdColaborador(){
-        return this.idColaborador;
+    public Colaborador getColaborador(){
+        return this.colaborador;
     }
     
     public double getSemanasColaborador(){
         return this.semanasColaborador;
     }
     
-    public void setIdColaborador(int idColaborador){
-        this.idColaborador = idColaborador;
+    public void setIdColaborador(Colaborador colaborador){
+        this.colaborador = colaborador;
     }
     
-    public void setSemanasColaborador(int semanasColaborador){
+    public void setSemanasColaborador(double semanasColaborador){
         this.semanasColaborador = semanasColaborador;
+    }
+    
+    public String toString(){
+        return this.colaborador + " dedica " + this.semanasColaborador + " semanas" ;  
     }
 }

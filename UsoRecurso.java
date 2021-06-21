@@ -7,8 +7,8 @@ import java.io.Serializable;
  */
 public class UsoRecurso implements Serializable
 {
-    // Identificador del recurso utilizado
-    int idRecurso;
+    // Recurso utilizado
+    Recurso recurso;
     // Cantidad solicitada del recurso en una tarea
     double cantidadSolicitadaRecurso;
     // Cantidad asignada del recurso en una tarea
@@ -25,16 +25,16 @@ public class UsoRecurso implements Serializable
      * @param cantidadSolicitadaRecurso La cantidad solicitada del recurso
      * 
      */
-    public void UsoRecurso(int idRecurso, double cantidadSolicitadaRecurso){
-        this.idRecurso = idRecurso;
+    public UsoRecurso(Recurso recurso, double cantidadSolicitadaRecurso){
+        this.recurso = recurso;
         this.cantidadSolicitadaRecurso = cantidadSolicitadaRecurso;
         this.cantidadAsignadaRecurso = 0;
         this.porcentajeRecurso = 0;
     }
     
     // Métodos get y set
-    public int getIdRecurso(){
-        return this.idRecurso;
+    public Recurso getRecurso(){
+        return this.recurso;
     }
     
     public double getCantidadSolicitadaRecurso(){
@@ -49,8 +49,8 @@ public class UsoRecurso implements Serializable
         return this.porcentajeRecurso;
     }
     
-    public void setIdRecurso(int idRecurso){
-        this.idRecurso = idRecurso;
+    public void setIdRecurso(Recurso recurso){
+        this.recurso = recurso;
     }
     
     public void setCantidadSolicitadaRecurso(double cantidadSolicitadaRecurso){
@@ -61,6 +61,11 @@ public class UsoRecurso implements Serializable
     public void setCantidadAsignadaRecurso(double cantidadAsignadaRecurso){
         this.cantidadAsignadaRecurso = cantidadAsignadaRecurso;
         this.porcentajeRecurso = (this.cantidadAsignadaRecurso / this.cantidadSolicitadaRecurso) * 100;
+    }
+    
+    public String toString(){
+        return this.recurso + " solicitó " + this.cantidadSolicitadaRecurso + ". Se le asignó " + this.cantidadAsignadaRecurso 
+               +  " (" + this.porcentajeRecurso + "%)";  
     }
     
 }

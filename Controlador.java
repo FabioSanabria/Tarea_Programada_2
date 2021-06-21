@@ -7,7 +7,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-
+import java.util.GregorianCalendar;
+import java.util.ArrayList;
 /**
  * Implementa un contraldor o programa principal
  * 
@@ -65,6 +66,10 @@ public class Controlador
      * Consultar los recursos del gestor
      */
     public void consultaRecursos(){
+        System.out.println();
+        System.out.println();
+        System.out.println("********** CONSULTA RECURSOS **********");
+        System.out.println();
         System.out.print(this.gestorListas.consultaRecursos());
     }
 
@@ -72,6 +77,10 @@ public class Controlador
      * Consultar los colaboradores del gestor
      */
     public void consultaColaboradores(){
+        System.out.println();
+        System.out.println();
+        System.out.println("********** CONSULTA COLABORADORES **********");
+        System.out.println();
         System.out.print(this.gestorListas.consultaColaboradores());
     }
 
@@ -79,6 +88,11 @@ public class Controlador
      * Consultar las listas del gestor
      */
     public void consultaListas(){
+        System.out.println();
+        System.out.println();
+        System.out.println("********** CONSULTA LISTAS Y TAREAS CON TODOS LOS DATOS **********");
+        System.out.println();
+        
         System.out.print(this.gestorListas.consultaListas());
         // JTextArea jTextArea = new JTextArea(this.gestorListas.consultaListas());
         // JScrollPane jScrollPane = new JScrollPane(jTextArea);
@@ -253,7 +267,7 @@ public class Controlador
             // Busca la tarea de acuerdo al idTarea
             Tarea tarea = lista.encuentraTarea(idTarea);
             if (tarea != null){
-                // Busca el recurso de acuerdo al idColaborador
+                // Busca el recurso de acuerdo al idRecurso
                 Recurso recurso = this.gestorListas.encuentraRecurso(idRecurso);
                 if (recurso != null){
                     // Agrega el recurso y cantidad solicitada a la tarea
@@ -306,9 +320,35 @@ public class Controlador
         }
 
     }
-
+    
+    
+    
     /**
-     * Inicia la tarea
+     * Crear una tarea proxy para iniciar otra tarea que tiene antecesoras que no han finalizado
+     * @param tarea El objeto de la tarea que va a iniciarse
+     * @param idTareaProxy El id para la tarea proxy
+     * @return tareaProxy El objeto con la tarea proxy
+     */
+    public Tarea creaTareaProxy(Tarea tarea, int idTareaProxy){
+        int idTarea = tarea.getIdTarea();
+        String nombreTarea = "Proxy de tarea# " + idTarea;
+        GregorianCalendar fechaInicioEstimadaTarea = tarea.getFechaInicioEstimadaTarea();
+        GregorianCalendar fechaFinEstimadaTarea = tarea.getFechaFinEstimadaTarea();
+        double estimacionDineroTarea = tarea.getEstimacionDineroTarea();
+        double estimacionEsfuerzoTarea = tarea.getEstimacionEsfuerzoTarea();
+        double estimacionTiempoTarea = tarea.getEstimacionTiempoTarea();
+        Tarea tareaProxy = new Tarea(idTareaProxy, nombreTarea, fechaInicioEstimadaTarea, fechaFinEstimadaTarea, estimacionDineroTarea,
+                                    estimacionEsfuerzoTarea, estimacionTiempoTarea);
+        
+        tareaProxy.setEstadoTarea("Terminado");
+        tareaProxy.setResponsables(tarea.getResponsables());
+        
+        
+        return tareaProxy;
+    }
+    
+    /**
+     * Inicia la tarea cambiando el estado a "Haciendo" y cambiando la fecha real de inicio (a la del sistema)
      */
     public void iniciaTarea(){
         int idLista = leeNumeroValido("Digite el id de la lista de la tarea que va a iniciar: ");
@@ -320,8 +360,32 @@ public class Controlador
             // Busca la tarea de acuerdo al idTarea
             Tarea tarea = lista.encuentraTarea(idTarea);
             if (tarea != null){
+                // REVISAR ANTECESORAS Y CREAR PROXY
+                ArrayList<Integer> antecesorasTarea = tarea.getAntecesorasTarea();
+                if(antecesorasTarea != null){
+                    for(Integer idTareaAntecesora:antecesorasTarea){
+                        Tarea tareaAntecesora = lista.encuentraTarea(idTareaAntecesora);
+                        if(!tareaAntecesora.getEstadoTarea().equals("Terminado")){
+                            //Buscar el id maximo de las tareas actuales
+                            int idMaxTarea = lista.buscaIdMaximoTarea();
+                            //Asigna el nuevo id para ponerselo al Proxy
+                            idMaxTarea++;
+                            //Crea la tarea proxy con los datos de la antecesora, pero con estado en "Terminado"
+                            Tarea tareaProxy = creaTareaProxy(tareaAntecesora, idMaxTarea);
+                            //poner el proxy como antecesora de la tarea
+                            tarea.agregaAntecesora(idMaxTarea);
+                            // Borra la antecesora que no ha finalizado
+                            tarea.borraAntecesora(idTareaAntecesora);
+                            //pone la antecesora como antecesora del proxy
+                            tareaProxy.agregaAntecesora(idTareaAntecesora);
+                            //Agregar la tarea proxy a la lista
+                            lista.agregaTarea(tareaProxy);
+                        }
+                    }
+                }
                 tarea.setEstadoTarea("Haciendo");
-                // pone la fecha
+                GregorianCalendar fechaHoy = new GregorianCalendar();
+                tarea.setFechaInicioRealTarea(fechaHoy);
             }
             else{
                 JOptionPane.showMessageDialog(null, "Tarea inexistente");
@@ -332,9 +396,11 @@ public class Controlador
         }
 
     }
-
+    
+    
     /**
-     * Finaliza la tarea
+     * Finaliza la tarea cambiando el estado a "Terminado", cambiando la fecha real de fin (a la del sistema)
+     * y cambiando el grado de avance a 100%
      */
     public void finalizaTarea(){
         int idLista = leeNumeroValido("Digite el id de la lista de la tarea que va a finalizar: ");
@@ -346,8 +412,13 @@ public class Controlador
             // Busca la tarea de acuerdo al idTarea
             Tarea tarea = lista.encuentraTarea(idTarea);
             if (tarea != null){
+                // Busca los proxys asociados a esta tarea y los elimina y actualiza las antecesoras
+                lista.revisaProxy(idTarea);
                 tarea.setEstadoTarea("Terminado");
-                // fecha y porcentaje
+                GregorianCalendar fechaHoy = new GregorianCalendar();
+                tarea.setFechaFinRealTarea(fechaHoy);
+                tarea.setGradoAvanceTarea(100.0);
+                
             }
             else{
                 JOptionPane.showMessageDialog(null, "Tarea inexistente");
@@ -364,11 +435,18 @@ public class Controlador
      */
     public void consultaEstado(){
         // 
-        System.out.println("TAREAS POR HACER (Por lista)");
+        System.out.println();
+        System.out.println();
+        System.out.println("********** CONSULTA POR ESTADO **********");
+        System.out.println();
+        System.out.println("**********TAREAS POR HACER (Por lista) **********");
+        System.out.println();
         System.out.print(this.gestorListas.consultaListas("Por hacer"));
-        System.out.println("TAREAS EN CURSO (Por lista)");
+        System.out.println("********** TAREAS EN CURSO (Por lista) **********");
+        System.out.println();
         System.out.print(this.gestorListas.consultaListas("Haciendo"));
-        System.out.println("TAREAS FINALIZADAS (Por lista)");
+        System.out.println("********** TAREAS FINALIZADAS (Por lista) **********");
+        System.out.println();
         System.out.print(this.gestorListas.consultaListas("Terminado"));
 
     }
@@ -381,40 +459,122 @@ public class Controlador
         double estimacionEsfuerzoTarea = leeNumeroDoubleValido("Digite el valor para la estimación de esfuerzo (-1 si no desea compararlo)");
         double estimacionTiempoTarea = leeNumeroDoubleValido("Digite el valor para la estimación de tiempo (-1 si no desea compararlo)");
         double gradoAvanceTarea = leeNumeroDoubleValido("Digite el valor para el grado de avance (-1 si no desea compararlo)");
+        
+        System.out.println();
+        System.out.println();
+        System.out.println("********** CONSULTA LISTAS Y TAREAS CON TODOS LOS DATOS (FILTRADOS POR PARAMETROS DINAMICOS) **********");
+        System.out.println();
         System.out.print(this.gestorListas.consultaListas(estimacionDineroTarea, estimacionEsfuerzoTarea,
-                                                          estimacionTiempoTarea, gradoAvanceTarea));
+                estimacionTiempoTarea, gradoAvanceTarea));
     }
 
     /**
-     * Consulta 
+     * Agregar una nueva lista al gestor de listas
      */
     public void agregaLista(){
-        // Re
+        int idLista = leeNumeroValido("Digite el id de la lista (no repetir un id existente): ");
+        String nombreLista = JOptionPane.showInputDialog("Digite el nombre de la lista");
+        String descripcionLista = JOptionPane.showInputDialog("Digite la descripcion de la lista");
+        String categoriaLista = JOptionPane.showInputDialog("Digite la categoría de la lista");
 
+        Lista lista = new Lista(idLista, nombreLista, descripcionLista, categoriaLista);
+        gestorListas.agregaLista(lista);
     }
 
     /**
-     * Consulta 
+     * Agregar una nueva tarea al gestor de listas 
      */
     public void agregaTarea(){
-        // Re
+        int idLista = leeNumeroValido("Digite el id de la lista (válido) a la que desea agregar una tarea");
+        int idTarea = leeNumeroValido("Digite el id de la tarea por agregar (no repetir un id existente)");
+        String nombreTarea = JOptionPane.showInputDialog("Digite el nombre de tarea");
+        String fechaInicioET = JOptionPane.showInputDialog("Digite la fecha estimada de inicio (dd/mm/aaaa)");
+        String fechaInicioFT = JOptionPane.showInputDialog("Digite la fecha estimada de fin (dd/mm/aaaa)");
+        double estimacionDineroTarea = leeNumeroDoubleValido("Digite la estimación de dinero (colones)");
+        double estimacionEsfuerzoTarea = leeNumeroDoubleValido("Digite la estimación de esfuerzo (de 1 a 10)");
+        double estimacionTiempoTarea = leeNumeroDoubleValido("Digite la estimación de tiempo (horas)");
 
+        //Transformar las fechas
+        String fecha[] = fechaInicioET.split("/");
+        int dia = Integer.parseInt(fecha[0]);
+        int mes = Integer.parseInt(fecha[1]);
+        int anno = Integer.parseInt(fecha[2]);
+        GregorianCalendar fechaInicioEstimadaTarea = new GregorianCalendar(anno, (mes-1), dia);
+
+        fecha = fechaInicioFT.split("/");
+        dia = Integer.parseInt(fecha[0]);
+        mes = Integer.parseInt(fecha[1]);
+        anno = Integer.parseInt(fecha[2]);
+        GregorianCalendar fechaFinEstimadaTarea = new GregorianCalendar(anno, (mes-1), dia);
+
+        // Crear  y agregar la tarea
+        Tarea tarea = new Tarea(idTarea, nombreTarea, fechaInicioEstimadaTarea, fechaFinEstimadaTarea, 
+                estimacionDineroTarea, estimacionEsfuerzoTarea, estimacionTiempoTarea);
+
+        Lista lista = this.gestorListas.encuentraLista(idLista);
+        if (lista != null){
+            lista.agregaTarea(tarea);
+        }
     }
 
     /**
-     * Consulta 
+     * Cambiar la cantidad asignada de un recurso y por lo tanto su % de asignación
      */
-    public void cambiaCantidadSolicitadaRecurso(){
-        // Re
+    public void cambiaCantidadAsignadaRecurso(){
+        int idLista = leeNumeroValido("Digite el id de la lista de la tarea a la que desea cambiar la asignación del recurso");
+        int idTarea = leeNumeroValido("Digite el id de la tarea a la que desea cambiar la asignación del recurso");
+        int idRecurso = leeNumeroValido("Digite el id del recurso al que desea cambiar la asignación: ");
+        double cantidadAsignadaRecurso = leeNumeroDoubleValido("Digite la nueva cantidad asignada: ");
+
+        // Busca la lista de acuerdo al idLista
+        Lista lista = this.gestorListas.encuentraLista(idLista);
+        if (lista != null){
+            // Busca la tarea de acuerdo al idTarea
+            Tarea tarea = lista.encuentraTarea(idTarea);
+            if (tarea != null){
+                // Busca el usoRecurso de acuerdo al idRecurso
+                UsoRecurso usoRecurso = tarea.encuentraUsoRecurso(idRecurso);
+                if (usoRecurso != null){
+                    // Cambiar la cantidad asignada a un recurso y su % de asignación
+                    usoRecurso.setCantidadAsignadaRecurso(cantidadAsignadaRecurso);
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Recurso inexistente");
+                }
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Tarea inexistente");
+            }
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Lista inexistente");
+        }
 
     }
 
     /**
-     * Consulta 
+     * Cambiar el grado de avance de una tarea
      */
     public void cambiaGradoAvance(){
-        // Re
+        int idLista = leeNumeroValido("Digite el id de la lista de la tarea a la que cambiará el grado de avance");
+        int idTarea = leeNumeroValido("Digite el id de la tarea a la que cambiará el grado de avance");
+        double gradoAvanceTarea = leeNumeroDoubleValido("Digite el nuevo grado de avance");
 
+        // Busca la lista de acuerdo al idLista
+        Lista lista = this.gestorListas.encuentraLista(idLista);
+        if (lista != null){
+            // Busca la tarea de acuerdo al idTarea
+            Tarea tarea = lista.encuentraTarea(idTarea);
+            if (tarea != null){
+                tarea.setGradoAvanceTarea(gradoAvanceTarea);
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Tarea inexistente");
+            }
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Lista inexistente");
+        }
     }
 
     /**
@@ -463,7 +623,7 @@ public class Controlador
      * Borrar un recurso de una tarea  
      */
     public void borraRecurso(){
-        
+
         int idLista = leeNumeroValido("Digite el id de la lista de la tarea de la que desea borrar un recurso: ");
         int idTarea = leeNumeroValido("Digite el id de la tarea de la que desea borrar un recurso: ");
         int idRecurso = leeNumeroValido("Digite el id del recurso que desea borrar: ");
@@ -526,7 +686,6 @@ public class Controlador
             JOptionPane.showMessageDialog(null, "Lista inexistente");
         }
 
-
     }
 
     /**
@@ -560,7 +719,6 @@ public class Controlador
         else{
             JOptionPane.showMessageDialog(null, "Lista inexistente");
         }
-  
 
     }
 
@@ -607,7 +765,7 @@ public class Controlador
                 break;
                 case 14: agregaAntecesora();
                 break;
-                case 15: cambiaCantidadSolicitadaRecurso();
+                case 15: cambiaCantidadAsignadaRecurso();
                 break;
                 case 16: iniciaTarea();
                 break;
