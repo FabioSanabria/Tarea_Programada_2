@@ -1,0 +1,4 @@
+1,Tijeras
+2,Goma
+3,Computadoras
+4,Impresoras 
