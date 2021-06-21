@@ -1,6 +1,7 @@
 import java.util.GregorianCalendar;
 import java.util.Calendar;
 import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Iterator;
 /**
  * Implementa el manejo de una tarea
@@ -9,7 +10,7 @@ import java.util.Iterator;
  * @version (Version 3)
  */
 
-public class Tarea
+public class Tarea implements Serializable
 {
     // Identificador de la tarea
     int idTarea;
@@ -78,28 +79,80 @@ public class Tarea
 
         this.gradoAvanceTarea = 0;
 
-        this.estadoTarea = "Por hacer";
+        this.estadoTarea = "Por hacer" ;  
         
         this.responsables = new ArrayList<>();
         
         this.recursosTarea = new ArrayList<>();
         
-        this.antecesorasTarea = new ArrayList<>();
+        this.antecesorasTarea= new ArrayList<>();
     }
     
-    /**
-     * Metodo ToString()
-     * @return Todos los valores descritos anteriormente en el constructor junto con algunas palabras mas para que el usuario
-     * logre entender que es cada variable devuelta
-     */
-    public String ToString(){
+    public String toString(){
+        String resultado = "";
+        resultado += this.idTarea + " " + this.nombreTarea + "\n" + 
+                    "    Fecha inicio estimada: " + this.fechaInicioEstimadaTarea.getTime() + "\n" + 
+                    "    Fecha fin estimada: " + this.fechaFinEstimadaTarea.getTime() + "\n" +
+                    "    Fecha inicio real: " + this.fechaInicioRealTarea.getTime()  + "\n" + 
+                    "    Fecha fin real: " + this.fechaFinRealTarea.getTime() + "\n" + 
+                    "    Estimacion dinero: " + this.estimacionDineroTarea + "\n" + 
+                    "    Estimacion esfuerzo: " + this.estimacionEsfuerzoTarea + "\n" +
+                    "    Estimacion tiempo: " + this.estimacionTiempoTarea + "\n" + 
+                    "    Grado de avance: " + this.gradoAvanceTarea + "\n" + 
+                    "    Estado: " + this.estadoTarea + "\n" +
+                    "    Responsables:\n"; 
+        for(ColaboradorTiempo colaboradorTiempo:this.responsables){
+            resultado += "      " + colaboradorTiempo + "\n";
+        } 
+        resultado += "    Recursos:\n"; 
+        for(UsoRecurso usoRecurso:this.recursosTarea){
+            resultado += "      " + usoRecurso + "\n";
+        } 
+        resultado += "    Antecesoras:\n";
+        for(int antecesora:this.antecesorasTarea){
+            resultado += "      Tarea #" + antecesora + "\n";
+        } 
+        return resultado;
+    }
     
-        return "El nombre de la tarea es " + nombreTarea + "\nEl id de la tarea es " + idTarea + 
-        "\nSu fecha de inicio estimada es de " + fechaInicioEstimadaTarea + "\nLa fecha estimada de fin de la tarea es " + fechaFinEstimadaTarea +
-        "\nSu fecha de inicio real es " + fechaInicioRealTarea + "\nSu fecha de fin real es " + fechaFinRealTarea + 
-        "El dinero estimado para esta tarea es " + estimacionDineroTarea + "\nEl esfuerzo estimado para esta tarea es " + estimacionEsfuerzoTarea + 
-        "\nLa estimacion del tiempo de la tarea es " + estimacionTiempoTarea + "\nEl grado de avance de esta es " + gradoAvanceTarea +
-        "\nEl estado de esta tarea es " + estadoTarea;
+    public int getIdTarea(){
+        return this.idTarea;
+    }
+    
+    public String getNombreTarea(){
+        return this.nombreTarea;
+    }
+    
+    public double getEstimacionTiempoTarea(){
+        return this.estimacionTiempoTarea;
+    }
+    
+    public double getEstimacionEsfuerzoTarea(){
+        return this.estimacionEsfuerzoTarea;
+    }
+    
+    public double getEstimacionDineroTarea(){
+        return this.estimacionDineroTarea;
+    }
+    
+    public double getGradoAvanceTarea(){
+        return this.gradoAvanceTarea;
+    }
+    
+    public GregorianCalendar getFechaInicioEstimadaTarea(){
+        return this.fechaInicioEstimadaTarea;
+    }
+    
+    public GregorianCalendar getFechaFinEstimadaTarea(){
+        return this.fechaFinEstimadaTarea;
+    }
+    
+    public ArrayList<Integer> getAntecesorasTarea(){
+        return this.antecesorasTarea;
+    }
+    
+    public ArrayList<ColaboradorTiempo> getResponsables(){
+        return this.responsables;
     }
     
     /**
@@ -114,30 +167,47 @@ public class Tarea
         return semanas; 
     }
     
+    public boolean esAntecesora(int idTarea){
+        int id = 0;
+        boolean encontro = false;
+        Iterator<Integer> it = this.antecesorasTarea.iterator();
+        
+        while(it.hasNext() && !encontro){
+            id = it.next();
+            if(id == idTarea){
+                encontro = true;
+            }
+        }
+        return encontro;
+    }
+    
     /**
      * Metodo agregarAntecesorTarea 
      * @param idTarea: El usuario da el id de la tarea antecesora y lo agrega al array de antecesoras
     */
     public void agregaAntecesora(int IdTareaAntecesora){
         antecesorasTarea.add(IdTareaAntecesora);
-        System.out.println("La tarea "+ this.idTarea + "depende de la tarea " + IdTareaAntecesora);
     }
     
     /**
      * Metodo agregaResponsable 
-     * @param colaborador: El usuario da colaborador y lo agrega al array de responsables
+     * @param idColaborador: El usuario da el id del Colaborador Tiempo y lo agrega al array de responsables
     */
     public void agregaResponsable(Colaborador colaborador){
         ColaboradorTiempo colaboradorTiempo = new ColaboradorTiempo(colaborador);
         this.responsables.add(colaboradorTiempo);
+        //Actualizar los tiempos semanales de cada colaborador
+        double horasPorSemana = 40.0; // Se asume que cada colaborador tiene 40 horas semanales
+        double semanasPorColaborador = this.estimacionTiempoTarea / (this.responsables.size() * horasPorSemana);
+        for(ColaboradorTiempo colaboradorT:responsables){
+            colaboradorT.setSemanasColaborador(semanasPorColaborador);
+        }
     }
     
-
     /**
      * Metodo agregaRecurso 
      * @param IdRecurso: El usuario da el id Recurso y lo agrega al array de recursosTarea
-       @param cantidadSolicitada : Indica la cantidad del recurso aque se desea agregar 
-       */
+    */
     public void agregaRecurso(Recurso recurso, double cantidadSolicitadaRecurso){
         UsoRecurso usoRecurso = new UsoRecurso(recurso,cantidadSolicitadaRecurso);
         this.recursosTarea.add(usoRecurso);
@@ -145,7 +215,7 @@ public class Tarea
     
     /**
      * Metodo borraAntecesora 
-     * @param idTareaAntecesora: ID de la antecesora que el usuario desea eliminar del array antecesor
+     * @param idTareaAntecesora: ID que el usuario desea eliminar del array antecesor
     */
     public void borraAntecesora(int idTareaAntecesora){
         int id = 0;
@@ -162,10 +232,10 @@ public class Tarea
             }
         }
     }
-
+    
     /**
      * Metodo borraRecurso 
-     * @param idRecurso: ID del recurso que el usuario desea eliminar del array antecesor
+     * @param idUsoRecurso: ID que el usuario desea eliminar del array antecesor
     */
     public void borraRecurso(int idRecurso){
         UsoRecurso usoRecurso = null;
@@ -183,11 +253,10 @@ public class Tarea
         }
     }
     
-
     /**
-     * Metodo borraResponsable  
-     * @param idColaborador: Recibe el id del colaborador que se desea eliminar del array
-    */ 
+     * Metodo borraResponsable 
+     * @param idColaborador: ID que el usuario desea eliminar del array de responsables
+    */
     public void borraResponsable(int idColaborador){
         ColaboradorTiempo colaboradorTiempo = null;
         boolean encontro = false;
@@ -203,6 +272,7 @@ public class Tarea
             }
         }
     }
+    
     
     /**
      * Metodo setEstadoTarea 
@@ -221,12 +291,16 @@ public class Tarea
     }
     
     /**
-     * Metodo setFechaInicioRealTarea 
+     * Metodo setsetFechaInicioRealTarea 
      * @param fechaInicioRealTarea
      * Establece un nuevo inicio real de la tarea
     */
     public void setFechaInicioRealTarea(GregorianCalendar fechaInicioRealTarea){
         this.fechaInicioRealTarea = fechaInicioRealTarea;
+    }
+    
+    public void setGradoAvanceTarea(double gradoAvanceTarea){
+        this.gradoAvanceTarea = gradoAvanceTarea;
     }
     
     /**
@@ -238,60 +312,10 @@ public class Tarea
         this.fechaFinRealTarea = fechaFinRealTarea;
     }    
     
-    /**
-     * Metodo setGradoAvaceTarea 
-     * @param gradoAvance
-     * Le pasa el valor "gradoAvance" a la variable "gradoAvanceTarea"
-    */    
-    public void setGradoAvanceTarea(double gradoAvance){
-        this.gradoAvanceTarea = gradoAvance;
+    public void setResponsables(ArrayList<ColaboradorTiempo> responsables){
+        this.responsables = responsables;
     }
     
-    /**
-     * Metodo getIdTarea 
-     * @return this.idTarea: Retorna el id de la tarea 
-    */
-    public int getIdTarea(){
-        return this.idTarea;
-    }
-    
-    /**
-     * Metodo getEstimacionTiempoTarea 
-     * @return this.estimacionTiempoTarea: Retorna el tiempo estimado de la tarea
-    */
-    public double getEstimacionTiempoTarea(){
-        return this.estimacionTiempoTarea;
-    }
-    
-    /**
-     * Metodo getEstimacionEsfuerzoTarea 
-     * @return this.estimacionEsfuerzoTarea: Retorna el tiempo que se estima para realizar esta tarea
-    */
-    public double getEstimacionEsfuerzoTarea(){
-        return this.estimacionEsfuerzoTarea;
-    }
-    
-    /**
-     * Metodo getEstimacionDineroTarea 
-     * @return this.estimacionDineroTarea: Retorna el dinero estimado para realizar esta tarea 
-    */
-    public double getEstimacionDineroTarea(){
-        return this.estimacionDineroTarea;
-    }
-    
-    /**
-     * Metodo getGradoAvanceTarea 
-     * @return this.gradoAvanceTarea: Retorna el avance que se lleva en la tarea 
-    */
-    public double getGradoAvanceTarea(){
-        return this.gradoAvanceTarea;
-    }
-    
-    /**
-     * Metodo encuentraUsoRecurso 
-     * @param idRecurso: Recibe el id que se desea buscar en el array
-     * @return recursoBuscado: retorna el recurso que estaba buscando el usuario
-    */ 
     public UsoRecurso encuentraUsoRecurso(int idRecurso){
         UsoRecurso recursoBuscado = null;
         boolean encontro = false;
@@ -306,26 +330,8 @@ public class Tarea
         
         if(!encontro){
             recursoBuscado = null;
-        }     
+        }
+        
         return recursoBuscado;
-    }
-    //Idea de proxy 2.0
-    /**
-     * Metodo crearProxy 
-     * @param estadoTarea: El estado que tiene la tarea, ya sea Terminada, en Proceso o Por hace, el proxy depende de esto
-     */
-    public Tarea crearProxy(int posicionTarea){
-        Tarea proxy;
-        if(antecesorasTarea.get(posicionTarea).getEstadoTarea().equals("Finalizado")){
-            System.out.println("Perfecto, la tarea puede iniciar de una vez ");
-            proxy = null;
-        }
-        else if(antecesorasTarea.get(posicionTarea).getEstadoTarea().equals("Por hacer") || 
-        antecesorasTarea.get(posicionTarea).getEstadoTarea().equals("Haciendo")){
-            System.out.println("La tarea requiere de una antecesora, creando proxy...");
-            proxy = new Tarea(antecesorasTarea.get(posicionTarea).getInformacionCompleta()); //Pasa los datos de la tarea que no esta terminada
-            return proxy;
-        }
-        return proxy; 
-    }
+    }   
 }

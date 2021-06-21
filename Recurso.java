@@ -25,7 +25,7 @@ public class Recurso implements Serializable
     }
     
     /**
-     * Metodo getRecursos
+     * Método getRecursos
      * @return this.idRecurso: Devuelve el id del recurso que se encuetra en la
      * variable
      */
@@ -34,7 +34,7 @@ public class Recurso implements Serializable
     }
     
     /**
-     * Metodo ToString
+     * Método ToString
      * @return this.idRecurso... : Devuelve el id del recurso junto con su descripcion
      */
     public String toString(){
@@ -42,7 +42,7 @@ public class Recurso implements Serializable
     }
     
     /**
-     * Metodo getDescripcionRecurso
+     * Método getDescripcionRecurso
      * @return this.descripcionRecurso: Devuelve la descripcion del recurso que se encuetra en la
      * variable se encuentra en la variable
      */
@@ -51,7 +51,7 @@ public class Recurso implements Serializable
     }
     
         /**
-     * Metodo setRecurso
+     * Método setRecurso
      * @param id: Es el id que se le desea asignar al recurso mediante este
      * metodo
      */
@@ -60,7 +60,7 @@ public class Recurso implements Serializable
     }
     
     /**
-     * Metodo setDescripcionRecurso
+     * Método setDescripcionRecurso
      * @param String descripcion: Es la descripcion que se le desea asignar al
      * recurso mediante este metodo
      */    
